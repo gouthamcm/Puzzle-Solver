@@ -86,6 +86,20 @@ public:
         if(x_pos< ROW_SIZE || y_pos < COL_SIZE) return;
         else if(x_pos ==ROW_SIZE || y_pos == COL_SIZE) return;
         else if(board[x_pos][y_pos] == ' ') return;
+        else{
+            int index = board[x_pos][y_pos]-'a';
+            word.push_back((char)(node->children_nodes[index] + 97));
+            if(node->end_of_word){
+                cout<<word<<endl;
+            }
+            char temp = board[x_pos][y_pos] = ' ';
+            node = node->children_nodes[index];
+            dfs(board, ROW_SIZE, COL_SIZE, x_pos+1, y_pos, node, word);
+            dfs(board, ROW_SIZE, COL_SIZE, x_pos, y_pos+1, node, word);
+            dfs(board, ROW_SIZE, COL_SIZE, x_pos+1, y_pos+1, node, word);
+            dfs(board, ROW_SIZE, COL_SIZE, x_pos, y_pos+1, node, word);
+            board[x_pos][y_pos] = temp;
+        }
     }
     void insert(string query)
     {
@@ -103,5 +117,6 @@ public:
 
 int main()
 {
+    
     return 0;
 }
