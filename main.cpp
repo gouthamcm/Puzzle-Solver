@@ -7,7 +7,7 @@ class TrieData
 private:
     TrieData *children_nodes[MAX_SIZE];
     bool end_of_word;
-    
+
 public:
     TrieData *root = NULL;
     TrieData *make_node()
@@ -73,38 +73,55 @@ public:
         }
         return temp->end_of_word;
     }
-    void solver(char **board, int row, int col, TrieData *root){
-        int visited[row][col] = {0};
-        for(int i=0; i<row; i++){
-            for(int j=0; j<col; j++){
-                string word="";
-                dfs(board, row, col, i, j, root, word);
+    void solver(char **board, int ROW_SIZE, int COL_SIZE, TrieData *root)
+    {
+        int visited[ROW_SIZE][COL_SIZE] = {0};
+        for (int i = 0; i < ROW_SIZE; i++)
+        {
+            for (int j = 0; j < COL_SIZE; j++)
+            {
+                string word = "";
+                dfs(board, ROW_SIZE, COL_SIZE, i, j, root, word);
             }
         }
     }
-    void dfs(char **board, int ROW_SIZE, int COL_SIZE, int x_pos, int y_pos, TrieData* node, string word){
-        if(x_pos< ROW_SIZE || y_pos < COL_SIZE) return;
-        else if(x_pos ==ROW_SIZE || y_pos == COL_SIZE) return;
-        else if(board[x_pos][y_pos] == ' ') return;
-        else{
-            int index = board[x_pos][y_pos]-'a';
-            word.push_back((char)(node->children_nodes[index] + 97));
-            if(node->end_of_word){
-                cout<<word<<endl;
+    void dfs(char **board, int ROW_SIZE, int COL_SIZE, int x_pos, int y_pos, TrieData *node, string word)
+    {
+        if (x_pos < ROW_SIZE || y_pos < COL_SIZE)
+            return;
+        else if (x_pos == ROW_SIZE || y_pos == COL_SIZE)
+            return;
+        else if (board[x_pos][y_pos] == ' ')
+            return;
+        else
+        {
+            int index = board[x_pos][y_pos] - 'a';
+            if (node->children_nodes[index])
+            {
+
+                word.push_back(board[x_pos][y_pos]);
+                
+                
+                node = node->children_nodes[index];
+                if (node->end_of_word)
+                {
+                    cout << word << endl;
+                }
+                char temp = board[x_pos][y_pos];
+                board[x_pos][y_pos]=' ';
+                dfs(board, ROW_SIZE, COL_SIZE, x_pos + 1, y_pos, node, word);
+                dfs(board, ROW_SIZE, COL_SIZE, x_pos, y_pos + 1, node, word);
+                dfs(board, ROW_SIZE, COL_SIZE, x_pos - 1, y_pos, node, word);
+                dfs(board, ROW_SIZE, COL_SIZE, x_pos, y_pos - 1, node, word);
+                board[x_pos][y_pos] = temp;
             }
-            char temp = board[x_pos][y_pos] = ' ';
-            node = node->children_nodes[index];
-            dfs(board, ROW_SIZE, COL_SIZE, x_pos+1, y_pos, node, word);
-            dfs(board, ROW_SIZE, COL_SIZE, x_pos, y_pos+1, node, word);
-            dfs(board, ROW_SIZE, COL_SIZE, x_pos+1, y_pos+1, node, word);
-            dfs(board, ROW_SIZE, COL_SIZE, x_pos, y_pos+1, node, word);
-            board[x_pos][y_pos] = temp;
         }
     }
     void insert(string query)
     {
-        if(!root){
-            root=make_node();
+        if (!root)
+        {
+            root = make_node();
         }
         insert_query(root, query);
     }
@@ -112,11 +129,37 @@ public:
     {
         return search_query(root, query);
     }
-    
+    void find_the_words(char **boards, int ROW_SIZE, int COL_SIZE)
+    {
+        solver(boards, ROW_SIZE, COL_SIZE, root);
+    }
 };
 
 int main()
 {
-    
+    int row, col, X;
+    TrieData ob;
+    cin >> row >> col;
+    char **boards;
+    boards = new char *[row];
+    for (int i = 0; i < row; i++)
+    {
+        boards[i] = new char[col];
+    }
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            cin >> boards[i][j];
+        }
+    }
+    cin >> X;
+    for (int i = 0; i < X; i++)
+    {
+        string inp;
+        cin >> inp;
+        ob.insert(inp);
+    }
+    ob.find_the_words(boards, row, col);
     return 0;
 }
