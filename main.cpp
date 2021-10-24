@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 #define MAX_SIZE 26
 using namespace std;
 
@@ -73,19 +74,35 @@ public:
         }
         return temp->end_of_word;
     }
-    void solver(char **board, int ROW_SIZE, int COL_SIZE, TrieData *root)
+    void solver(char **board, int ROW_SIZE, int COL_SIZE, TrieData *root, int X)
     {
+        string res[X];
+        int count = 0;
         int visited[ROW_SIZE][COL_SIZE] = {0};
         for (int i = 0; i < ROW_SIZE; i++)
         {
             for (int j = 0; j < COL_SIZE; j++)
             {
                 string word = "";
-                dfs(board, ROW_SIZE, COL_SIZE, i, j, root, word);
+                dfs(board, ROW_SIZE, COL_SIZE, i, j, root, word, res, count);
             }
         }
+        for(int i=0; i<count; i++){
+            for(int j=i+1; j<count; j++){
+                string temp;
+                if(strcmp(res[i].c_str(), res[j].c_str())>0){
+                    temp=res[i];
+                    res[i]=res[j];
+                    res[j]=temp;
+                }
+            }
+        }
+        for (int i = 0; i < count; i++)
+        {
+            cout << res[i]<<" ";
+        }
     }
-    void dfs(char **board, int ROW_SIZE, int COL_SIZE, int x_pos, int y_pos, TrieData *node, string word)
+    void dfs(char **board, int ROW_SIZE, int COL_SIZE, int x_pos, int y_pos, TrieData *node, string word, string res[], int &count)
     {
         if (x_pos < 0 || y_pos < 0)
             return;
@@ -100,19 +117,20 @@ public:
             {
 
                 word.push_back(board[x_pos][y_pos]);
-                
-                
+
                 node = node->children_nodes[index];
                 if (node->end_of_word)
                 {
-                    cout << word << endl;
+                    // cout << word << " ";
+                    res[count] = word;
+                    count++;
                 }
                 char temp = board[x_pos][y_pos];
-                board[x_pos][y_pos]=' ';
-                dfs(board, ROW_SIZE, COL_SIZE, x_pos + 1, y_pos, node, word);
-                dfs(board, ROW_SIZE, COL_SIZE, x_pos, y_pos + 1, node, word);
-                dfs(board, ROW_SIZE, COL_SIZE, x_pos - 1, y_pos, node, word);
-                dfs(board, ROW_SIZE, COL_SIZE, x_pos, y_pos - 1, node, word);
+                board[x_pos][y_pos] = ' ';
+                dfs(board, ROW_SIZE, COL_SIZE, x_pos + 1, y_pos, node, word, res, count);
+                dfs(board, ROW_SIZE, COL_SIZE, x_pos, y_pos + 1, node, word, res, count);
+                dfs(board, ROW_SIZE, COL_SIZE, x_pos - 1, y_pos, node, word, res, count);
+                dfs(board, ROW_SIZE, COL_SIZE, x_pos, y_pos - 1, node, word, res, count);
                 board[x_pos][y_pos] = temp;
             }
         }
@@ -129,9 +147,10 @@ public:
     {
         return search_query(root, query);
     }
-    void find_the_words(char **boards, int ROW_SIZE, int COL_SIZE)
+    void find_the_words(char **boards, int ROW_SIZE, int COL_SIZE, int X)
     {
-        solver(boards, ROW_SIZE, COL_SIZE, root);
+
+        solver(boards, ROW_SIZE, COL_SIZE, root, X);
     }
 };
 
@@ -160,6 +179,7 @@ int main()
         cin >> inp;
         ob.insert(inp);
     }
-    ob.find_the_words(boards, row, col);
+    string result[X];
+    ob.find_the_words(boards, row, col, X);
     return 0;
 }
