@@ -7,7 +7,7 @@ class TrieData
 private:
     TrieData *children_nodes[MAX_SIZE];
     bool end_of_word;
-
+    
 public:
     TrieData *root = NULL;
     TrieData *make_node()
@@ -73,7 +73,20 @@ public:
         }
         return temp->end_of_word;
     }
-    
+    void solver(char **board, int row, int col, TrieData *root){
+        int visited[row][col] = {0};
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                string word="";
+                dfs(board, row, col, i, j, root, word);
+            }
+        }
+    }
+    void dfs(char **board, int ROW_SIZE, int COL_SIZE, int x_pos, int y_pos, TrieData* node, string word){
+        if(x_pos< ROW_SIZE || y_pos < COL_SIZE) return;
+        else if(x_pos ==ROW_SIZE || y_pos == COL_SIZE) return;
+        else if(board[x_pos][y_pos] == ' ') return;
+    }
     void insert(string query)
     {
         if(!root){
