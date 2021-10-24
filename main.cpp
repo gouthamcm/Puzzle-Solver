@@ -87,7 +87,7 @@ public:
     }
     void dfs(char **board, int ROW_SIZE, int COL_SIZE, int x_pos, int y_pos, TrieData *node, string word)
     {
-        if (x_pos < ROW_SIZE || y_pos < COL_SIZE)
+        if (x_pos < 0 || y_pos < 0)
             return;
         else if (x_pos == ROW_SIZE || y_pos == COL_SIZE)
             return;
