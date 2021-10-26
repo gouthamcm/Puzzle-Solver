@@ -8,7 +8,7 @@ class TrieData
 private:
     TrieData *children_nodes[MAX_SIZE];
     bool end_of_word;
-
+    
 public:
     TrieData *root = NULL;
     TrieData *make_node()
